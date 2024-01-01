@@ -2,33 +2,40 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "PlayerPawn.generated.h"
+#include "DevonPlayerPawn.generated.h"
 
 class UBoxComponent;
 class UStaticMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
+class UFloatingPawnMovement;
 
 UCLASS()
-class DEVONCORE_API APlayerPawn : public APawn
+class DEVONCORE_API ADevonPlayerPawn : public APawn
 {
 	GENERATED_BODY()
 
 public:
-	APlayerPawn();
+	ADevonPlayerPawn();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	// collisions
+	void Move(const struct FInputActionValue& ActionValue);
+	
 	UPROPERTY(EditAnywhere)
-	class UBoxComponent* Box;
-
-	UPROPERTY(EditAnywhere)
-	class UStaticMeshComponent* Body;
+	UBoxComponent* CollisionBox;
 
 	UPROPERTY(EditAnywhere)
-	class USpringArmComponent* SpringArm;
+	UStaticMeshComponent* Body;
 
 	UPROPERTY(EditAnywhere)
-	class UCameraComponent* Camera;
+	USpringArmComponent* SpringArm;
+
+	UPROPERTY(EditAnywhere)
+	UCameraComponent* Camera;
+
+	UPROPERTY(EditAnywhere)
+	UFloatingPawnMovement* Movement;
+
+	UPROPERTY(EditAnywhere)
+	float MoveScale;
 };
 
