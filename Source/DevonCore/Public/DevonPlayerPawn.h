@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "HoverComponent.h"
 #include "DevonPlayerPawn.generated.h"
 
 class UBoxComponent;
@@ -33,9 +34,22 @@ public:
 	UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere)
+	UHoverComponent* HoverFL;
+
+	UPROPERTY(EditAnywhere)
+	UHoverComponent* HoverFR;
+
+	UPROPERTY(EditAnywhere)
+	UHoverComponent* HoverBL;
+
+	UPROPERTY(EditAnywhere)
+	UHoverComponent* HoverBR;
+
+	UPROPERTY(EditAnywhere)
 	UFloatingPawnMovement* Movement;
 
 	UPROPERTY(EditAnywhere)
 	float MoveScale;
+
 };
 

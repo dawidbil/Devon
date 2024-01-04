@@ -1,5 +1,6 @@
 #include "DevonPlayerPawn.h"
 #include "DevonPlayerController.h"
+#include "HoverComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -21,6 +22,18 @@ ADevonPlayerPawn::ADevonPlayerPawn()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+
+	HoverFL = CreateDefaultSubobject<UHoverComponent>(TEXT("HoverFL"));
+	HoverFL->SetupAttachment(Body);
+
+	HoverFR = CreateDefaultSubobject<UHoverComponent>(TEXT("HoverFR"));
+	HoverFR->SetupAttachment(Body);
+
+	HoverBL = CreateDefaultSubobject<UHoverComponent>(TEXT("HoverBL"));
+	HoverBL->SetupAttachment(Body);
+
+	HoverBR = CreateDefaultSubobject<UHoverComponent>(TEXT("HoverBR"));
+	HoverBR->SetupAttachment(Body);
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
 	MoveScale = 1.f;
