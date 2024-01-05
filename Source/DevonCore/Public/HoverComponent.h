@@ -12,6 +12,7 @@ class DEVONCORE_API UHoverComponent : public USceneComponent
 
 public:
 	UHoverComponent();
+	virtual void BeginPlay();
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction);
 
 	UPROPERTY(EditAnywhere)
