@@ -5,7 +5,6 @@
 #include "HoverComponent.h"
 #include "DevonPlayerPawn.generated.h"
 
-class UBoxComponent;
 class UStaticMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -20,9 +19,10 @@ public:
 	ADevonPlayerPawn();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void Move(const struct FInputActionValue& ActionValue);
+	void BumpUpwards(const struct FInputActionValue& ActionValue);
 	
 	UPROPERTY(EditAnywhere)
-	UBoxComponent* CollisionBox;
+	UStaticMeshComponent* CollisionMesh;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Body;
@@ -51,5 +51,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float MoveScale;
 
+	UPROPERTY(EditAnywhere)
+	FVector MovingForceLocation;
 };
 

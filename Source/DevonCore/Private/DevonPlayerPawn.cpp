@@ -1,8 +1,8 @@
 #include "DevonPlayerPawn.h"
 #include "DevonPlayerController.h"
 #include "HoverComponent.h"
+#include "Log.h"
 #include "Camera/CameraComponent.h"
-#include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -11,29 +11,29 @@
 
 ADevonPlayerPawn::ADevonPlayerPawn()
 {
-	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
-	SetRootComponent(CollisionBox);
+	CollisionMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollisionMesh"));
+	SetRootComponent(CollisionMesh);
 
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
-	Body->SetupAttachment(CollisionBox);
+	Body->SetupAttachment(CollisionMesh);
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm->SetupAttachment(CollisionBox);
+	SpringArm->SetupAttachment(CollisionMesh);
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
 	HoverFL = CreateDefaultSubobject<UHoverComponent>(TEXT("HoverFL"));
-	HoverFL->SetupAttachment(Body);
+	HoverFL->SetupAttachment(CollisionMesh);
 
 	HoverFR = CreateDefaultSubobject<UHoverComponent>(TEXT("HoverFR"));
-	HoverFR->SetupAttachment(Body);
+	HoverFR->SetupAttachment(CollisionMesh);
 
 	HoverBL = CreateDefaultSubobject<UHoverComponent>(TEXT("HoverBL"));
-	HoverBL->SetupAttachment(Body);
+	HoverBL->SetupAttachment(CollisionMesh);
 
 	HoverBR = CreateDefaultSubobject<UHoverComponent>(TEXT("HoverBR"));
-	HoverBR->SetupAttachment(Body);
+	HoverBR->SetupAttachment(CollisionMesh);
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
 	MoveScale = 1.f;
@@ -47,6 +47,7 @@ void ADevonPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	ADevonPlayerController* DPC = Cast<ADevonPlayerController>(Controller);
 	check(EIC && DPC);
 	EIC->BindAction(DPC->MoveAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::Move);
+	EIC->BindAction(DPC->BumpUpwardsAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::BumpUpwards);
 
 	ULocalPlayer* LocalPlayer = DPC->GetLocalPlayer();
 	check(LocalPlayer);
@@ -59,6 +60,15 @@ void ADevonPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void ADevonPlayerPawn::Move(const FInputActionValue& ActionValue)
 {
 	FVector Input = ActionValue.Get<FInputActionValue::Axis3D>();
-	AddMovementInput(GetActorRotation().RotateVector(Input), MoveScale);
+	UE_LOG(LogDevonCore, Log, TEXT("ADevonPlayerPawn::Move"));
+	UStaticMeshComponent* RootComponentMesh = Cast<UStaticMeshComponent>(GetRootComponent());
+	RootComponentMesh->AddForce(RootComponentMesh->GetForwardVector() * RootComponentMesh->GetMass() * MoveScale * Input.X);
+}
+
+void ADevonPlayerPawn::BumpUpwards(const FInputActionValue& ActionValue)
+{
+	UE_LOG(LogDevonCore, Log, TEXT("ADevonPlayerPawn::BumpUpwards"));
+	UStaticMeshComponent* RootComponentMesh = Cast<UStaticMeshComponent>(GetRootComponent());
+	RootComponentMesh->AddForce(FVector::UpVector * RootComponentMesh->GetMass() * MoveScale);
 }
 
