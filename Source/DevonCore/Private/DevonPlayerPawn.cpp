@@ -4,10 +4,12 @@
 #include "Log.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SceneComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "DrawDebugHelpers.h"
+#include "Math/Color.h"
 
 ADevonPlayerPawn::ADevonPlayerPawn()
 {
@@ -35,8 +37,12 @@ ADevonPlayerPawn::ADevonPlayerPawn()
 	HoverBR = CreateDefaultSubobject<UHoverComponent>(TEXT("HoverBR"));
 	HoverBR->SetupAttachment(CollisionMesh);
 
-	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
-	MoveScale = 1.f;
+	ThrustLocation = CreateDefaultSubobject<USceneComponent>(TEXT("ThrustLocation"));
+	ThrustLocation->SetupAttachment(CollisionMesh);
+
+	ForwardSpeed = 10.f;
+	BackwardSpeed = 2.f;
+	TurningSpeed = 2.f;
 }
 
 void ADevonPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -57,18 +63,26 @@ void ADevonPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Subsystem->AddMappingContext(DPC->PawnMappingContext, 0);
 }
 
+void ADevonPlayerPawn::ScaleInput(FVector* Input)
+{
+	Input->X *= Input->X > 0 ? ForwardSpeed : BackwardSpeed;
+	Input->Y *= TurningSpeed;
+}
+
 void ADevonPlayerPawn::Move(const FInputActionValue& ActionValue)
 {
-	FVector Input = ActionValue.Get<FInputActionValue::Axis3D>();
 	UE_LOG(LogDevonCore, Log, TEXT("ADevonPlayerPawn::Move"));
-	UStaticMeshComponent* RootComponentMesh = Cast<UStaticMeshComponent>(GetRootComponent());
-	RootComponentMesh->AddForce(RootComponentMesh->GetForwardVector() * RootComponentMesh->GetMass() * MoveScale * Input.X);
+
+	FVector Input = ActionValue.Get<FInputActionValue::Axis3D>();
+	ScaleInput(&Input);
+	FVector AppliedForce = GetActorRotation().RotateVector(Input) * CollisionMesh->GetMass();
+	CollisionMesh->AddForceAtLocation(AppliedForce, ThrustLocation->GetComponentLocation());
+	DrawDebugDirectionalArrow(GetWorld(), ThrustLocation->GetComponentLocation(), ThrustLocation->GetComponentLocation() + AppliedForce, 150.f, FColor::Blue, false, 1.f, 0, 1.f);
 }
 
 void ADevonPlayerPawn::BumpUpwards(const FInputActionValue& ActionValue)
 {
 	UE_LOG(LogDevonCore, Log, TEXT("ADevonPlayerPawn::BumpUpwards"));
-	UStaticMeshComponent* RootComponentMesh = Cast<UStaticMeshComponent>(GetRootComponent());
-	RootComponentMesh->AddForce(FVector::UpVector * RootComponentMesh->GetMass() * MoveScale);
+	CollisionMesh->AddForce(FVector::UpVector * CollisionMesh->GetMass());
 }
 

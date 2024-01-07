@@ -6,6 +6,7 @@
 #include "DevonPlayerPawn.generated.h"
 
 class UStaticMeshComponent;
+class USceneComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UFloatingPawnMovement;
@@ -18,6 +19,7 @@ class DEVONCORE_API ADevonPlayerPawn : public APawn
 public:
 	ADevonPlayerPawn();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void ScaleInput(FVector* Input);
 	void Move(const struct FInputActionValue& ActionValue);
 	void BumpUpwards(const struct FInputActionValue& ActionValue);
 	
@@ -46,12 +48,15 @@ public:
 	UHoverComponent* HoverBR;
 
 	UPROPERTY(EditAnywhere)
-	UFloatingPawnMovement* Movement;
+	float ForwardSpeed;
 
 	UPROPERTY(EditAnywhere)
-	float MoveScale;
+	float BackwardSpeed;
 
 	UPROPERTY(EditAnywhere)
-	FVector MovingForceLocation;
+	float TurningSpeed;
+
+	UPROPERTY(EditAnywhere)
+	USceneComponent* ThrustLocation;
 };
 

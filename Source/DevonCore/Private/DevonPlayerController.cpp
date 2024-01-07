@@ -2,6 +2,25 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 
+static void MapKey(UInputMappingContext* InputMappingContext, UInputAction* InputAction, FKey Key, bool bNegate = false, bool bSwizzle = false)
+{
+	FEnhancedActionKeyMapping& Mapping = InputMappingContext->MapKey(InputAction, Key);
+	UObject* Outer = InputMappingContext->GetOuter();
+
+	if (bNegate)
+	{
+		UInputModifierNegate* Negate = NewObject<UInputModifierNegate>(Outer);
+		Mapping.Modifiers.Add(Negate);
+	}
+
+	if (bSwizzle)
+	{
+		UInputModifierSwizzleAxis* Swizzle = NewObject<UInputModifierSwizzleAxis>(Outer);
+		Swizzle->Order = EInputAxisSwizzle::YXZ;
+		Mapping.Modifiers.Add(Swizzle);
+	}
+}
+
 void ADevonPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -9,7 +28,10 @@ void ADevonPlayerController::SetupInputComponent()
 
 	MoveAction = NewObject<UInputAction>(this);
 	MoveAction->ValueType = EInputActionValueType::Axis3D;
-	PawnMappingContext->MapKey(MoveAction, EKeys::W);
+	MapKey(PawnMappingContext, MoveAction, EKeys::W);
+	MapKey(PawnMappingContext, MoveAction, EKeys::S, true);
+	MapKey(PawnMappingContext, MoveAction, EKeys::A, false, true);
+	MapKey(PawnMappingContext, MoveAction, EKeys::D, true, true);
 
 	BumpUpwardsAction = NewObject<UInputAction>(this);
 	BumpUpwardsAction->ValueType = EInputActionValueType::Boolean;
