@@ -71,13 +71,11 @@ void ADevonPlayerPawn::ScaleInput(FVector* Input)
 
 void ADevonPlayerPawn::Move(const FInputActionValue& ActionValue)
 {
-	UE_LOG(LogDevonCore, Log, TEXT("ADevonPlayerPawn::Move"));
-
 	FVector Input = ActionValue.Get<FInputActionValue::Axis3D>();
 	ScaleInput(&Input);
-	FVector AppliedForce = GetActorRotation().RotateVector(Input) * CollisionMesh->GetMass();
-	CollisionMesh->AddForceAtLocation(AppliedForce, ThrustLocation->GetComponentLocation());
-	DrawDebugDirectionalArrow(GetWorld(), ThrustLocation->GetComponentLocation(), ThrustLocation->GetComponentLocation() + AppliedForce, 150.f, FColor::Blue, false, 1.f, 0, 1.f);
+	FVector AppliedForce = GetActorRotation().RotateVector(Input);
+	CollisionMesh->AddForceAtLocation(AppliedForce * CollisionMesh->GetMass(), ThrustLocation->GetComponentLocation());
+	DrawDebugDirectionalArrow(GetWorld(), ThrustLocation->GetComponentLocation(), ThrustLocation->GetComponentLocation() + AppliedForce * 150.f, 150.f, FColor::Blue, false, 1.f, 0, 1.f);
 }
 
 void ADevonPlayerPawn::BumpUpwards(const FInputActionValue& ActionValue)
