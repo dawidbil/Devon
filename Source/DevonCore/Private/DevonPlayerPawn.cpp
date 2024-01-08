@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Math/Color.h"
+#include "Math/Vector.h"
 
 ADevonPlayerPawn::ADevonPlayerPawn()
 {
@@ -43,6 +44,19 @@ ADevonPlayerPawn::ADevonPlayerPawn()
 	ForwardSpeed = 10.f;
 	BackwardSpeed = 2.f;
 	TurningSpeed = 2.f;
+	MaxSpeed = 100.f;
+
+	FanMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FanMesh"));
+	FanMesh->SetupAttachment(Body);
+	FanMaxRotationSpeed = 10.f;
+	FanRotationAcceleration = 1.f;
+	FanRotationSpeed = 0.f;
+
+	JitterMovementFrequency = 100.f;
+	JitterMovementAmplitude = 1.f;
+
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.SetTickFunctionEnable(true);
 }
 
 void ADevonPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -53,7 +67,6 @@ void ADevonPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	ADevonPlayerController* DPC = Cast<ADevonPlayerController>(Controller);
 	check(EIC && DPC);
 	EIC->BindAction(DPC->MoveAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::Move);
-	EIC->BindAction(DPC->BumpUpwardsAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::BumpUpwards);
 
 	ULocalPlayer* LocalPlayer = DPC->GetLocalPlayer();
 	check(LocalPlayer);
@@ -72,15 +85,75 @@ void ADevonPlayerPawn::ScaleInput(FVector* Input)
 void ADevonPlayerPawn::Move(const FInputActionValue& ActionValue)
 {
 	FVector Input = ActionValue.Get<FInputActionValue::Axis3D>();
+	// Rotate fan before scaling
+	UE_LOG(LogDevonCore, Log, TEXT("Adding to FanRotationSpeed: %f"), Input.X * FanRotationAcceleration);
+	FanRotationSpeed += Input.X * FanRotationAcceleration;
+	// Scale & apply force to body
 	ScaleInput(&Input);
-	FVector AppliedForce = GetActorRotation().RotateVector(Input);
-	CollisionMesh->AddForceAtLocation(AppliedForce * CollisionMesh->GetMass(), ThrustLocation->GetComponentLocation());
-	DrawDebugDirectionalArrow(GetWorld(), ThrustLocation->GetComponentLocation(), ThrustLocation->GetComponentLocation() + AppliedForce * 150.f, 150.f, FColor::Blue, false, 1.f, 0, 1.f);
+	FVector AppliedForce = GetActorRotation().RotateVector(Input) * CollisionMesh->GetMass();
+	CollisionMesh->AddForceAtLocation(AppliedForce, ThrustLocation->GetComponentLocation());
 }
 
-void ADevonPlayerPawn::BumpUpwards(const FInputActionValue& ActionValue)
+float VectorSquaredValuesSum(const FVector* Vector)
 {
-	UE_LOG(LogDevonCore, Log, TEXT("ADevonPlayerPawn::BumpUpwards"));
-	CollisionMesh->AddForce(FVector::UpVector * CollisionMesh->GetMass());
+	return FMath::Pow(Vector->X, 2.f) + FMath::Pow(Vector->Y, 2.f) + FMath::Pow(Vector->Z, 2.f);
+}
+
+void ADevonPlayerPawn::LimitVelocityToMaxSpeed()
+{
+	FVector Velocity = CollisionMesh->GetPhysicsLinearVelocity();
+	// UE_LOG(LogDevonCore, Log, TEXT("Current Speed: %f"), Velocity.Size());
+	if (Velocity.Size() <= MaxSpeed)
+	{
+		return;
+	}
+	float LimitFactor = FMath::Pow(MaxSpeed, 2.f) / VectorSquaredValuesSum(&Velocity);
+	FVector LimitedVelocity = Velocity * LimitFactor;
+	// UE_LOG(LogDevonCore, Log, TEXT("Limited Speed: %f"), LimitedVelocity.Size());
+	CollisionMesh->SetPhysicsLinearVelocity(LimitedVelocity);
+}
+
+void ADevonPlayerPawn::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	LimitVelocityToMaxSpeed();
+	
+	// Hovercraft mesh jitter movement
+	JitterMovementTime += DeltaSeconds;
+	// Jitter is only visible when vehicle is moving slowly
+	float JitterMovementScale = 1 - (CollisionMesh->GetPhysicsLinearVelocity().Size() / MaxSpeed);
+	float JitterMovementCurrent = FMath::Sin(JitterMovementTime * JitterMovementFrequency) * JitterMovementAmplitude * JitterMovementScale;
+	Body->SetRelativeLocation(FVector(0.f, JitterMovementCurrent, JitterMovementCurrent));
+
+	// Fan mesh animation
+	FRotator Rotation = FanMesh->GetRelativeRotation();
+	Rotation.Roll += FanRotationSpeed;
+	if (FanRotationSpeed > FanMaxRotationSpeed)
+	{
+		FanRotationSpeed = FanMaxRotationSpeed;
+	}
+	if (FanRotationSpeed < -FanMaxRotationSpeed)
+	{
+		FanRotationSpeed = -FanMaxRotationSpeed;
+	}
+	if (FanRotationSpeed > 0)
+	{
+		FanRotationSpeed -= FanRotationAcceleration / 2;
+		if (FanRotationSpeed < 0)
+		{
+			FanRotationSpeed = 0;
+		}
+	}
+	else if (FanRotationSpeed < 0)
+	{
+		FanRotationSpeed += FanRotationAcceleration / 2;
+		if (FanRotationSpeed > 0)
+		{
+			FanRotationSpeed = 0;
+		}
+	}
+	UE_LOG(LogDevonCore, Log, TEXT("FanRotationSpeed: %f"), FanRotationSpeed);
+	UE_LOG(LogDevonCore, Log, TEXT("Rotation Roll: %f"), Rotation.Roll);
+	FanMesh->SetRelativeRotation(Rotation);
 }
 

@@ -21,7 +21,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void ScaleInput(FVector* Input);
 	void Move(const struct FInputActionValue& ActionValue);
-	void BumpUpwards(const struct FInputActionValue& ActionValue);
+	void LimitVelocityToMaxSpeed();
+	void Tick(float DeltaSeconds);
 	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* CollisionMesh;
@@ -35,6 +36,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	UCameraComponent* Camera;
 
+	/* Movement */
 	UPROPERTY(EditAnywhere)
 	UHoverComponent* HoverFL;
 
@@ -48,6 +50,9 @@ public:
 	UHoverComponent* HoverBR;
 
 	UPROPERTY(EditAnywhere)
+	USceneComponent* ThrustLocation;
+
+	UPROPERTY(EditAnywhere)
 	float ForwardSpeed;
 
 	UPROPERTY(EditAnywhere)
@@ -57,6 +62,29 @@ public:
 	float TurningSpeed;
 
 	UPROPERTY(EditAnywhere)
-	USceneComponent* ThrustLocation;
+	float MaxSpeed;
+
+	/* Fan animation */
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* FanMesh;
+
+	UPROPERTY(EditAnywhere)
+	float FanMaxRotationSpeed;
+
+	UPROPERTY(EditAnywhere)
+	float FanRotationAcceleration;
+private:
+	float FanRotationSpeed;
+
+public:
+	/* Jitter movement */
+	UPROPERTY(EditAnywhere)
+	float JitterMovementFrequency;
+
+	UPROPERTY(EditAnywhere)
+	float JitterMovementAmplitude;
+
+private:
+	float JitterMovementTime;
 };
 
