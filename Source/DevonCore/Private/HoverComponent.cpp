@@ -32,7 +32,6 @@ void UHoverComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, F
 		UStaticMeshComponent* ParentComponentMesh = Cast<UStaticMeshComponent>(GetAttachParent());
 		// Force power increases as distance between body and hit object gets closer
 		float DistanceScale = 1 - Hit.Time;
-		UE_LOG(LogDevonCore, Log, TEXT("Pushing up (DistanceScale: %f)"), DistanceScale);
 		FVector AppliedForce = Hit.ImpactNormal * DistanceScale;
 		ParentComponentMesh->AddForceAtLocation(AppliedForce * PushForce, GetComponentLocation());
 		DrawDebugDirectionalArrow(GetWorld(), GetComponentLocation(), GetComponentLocation() + (AppliedForce * 150.f), 150.f, FColor::Yellow, false, 1.f, 0, 1.f);
