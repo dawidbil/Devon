@@ -32,9 +32,5 @@ void ADevonPlayerController::SetupInputComponent()
 	MapKey(PawnMappingContext, MoveAction, EKeys::S, true);
 	MapKey(PawnMappingContext, MoveAction, EKeys::A, false, true);
 	MapKey(PawnMappingContext, MoveAction, EKeys::D, true, true);
-
-	BumpUpwardsAction = NewObject<UInputAction>(this);
-	BumpUpwardsAction->ValueType = EInputActionValueType::Boolean;
-	PawnMappingContext->MapKey(BumpUpwardsAction, EKeys::SpaceBar);
 }
 

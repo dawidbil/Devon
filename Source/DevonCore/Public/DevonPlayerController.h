@@ -20,8 +20,5 @@ public:
 
 	UPROPERTY()
 	UInputAction* MoveAction;
-
-	UPROPERTY()
-	UInputAction* BumpUpwardsAction;
 };
 
