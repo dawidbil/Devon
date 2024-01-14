@@ -8,6 +8,6 @@ public class DevonEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V4;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
-		ExtraModuleNames.Add("DevonCore");
+		ExtraModuleNames.AddRange(new string[] { "DevonCore", "Weapons"} );
 	}
 }
