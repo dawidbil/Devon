@@ -32,5 +32,10 @@ void ADevonPlayerController::SetupInputComponent()
 	MapKey(PawnMappingContext, MoveAction, EKeys::S, true);
 	MapKey(PawnMappingContext, MoveAction, EKeys::A, false, true);
 	MapKey(PawnMappingContext, MoveAction, EKeys::D, true, true);
+
+	RotateAction = NewObject<UInputAction>(this);
+	RotateAction->ValueType = EInputActionValueType::Axis3D;
+	MapKey(PawnMappingContext, RotateAction, EKeys::MouseY);
+	MapKey(PawnMappingContext, RotateAction, EKeys::MouseX, false, true);
 }
 
