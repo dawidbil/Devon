@@ -19,9 +19,6 @@ class DEVONCORE_API ADevonPlayerPawn : public APawn
 public:
 	ADevonPlayerPawn();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	void ScaleInput(FVector* Input);
-	void Move(const struct FInputActionValue& ActionValue);
-	void LimitVelocityToMaxSpeed();
 	void Tick(float DeltaSeconds);
 	
 	UPROPERTY(EditAnywhere)
@@ -37,6 +34,10 @@ public:
 	UCameraComponent* Camera;
 
 	/* Movement */
+	void ScaleInput(FVector* Input);
+	void MoveBody(const struct FInputActionValue& ActionValue);
+	void LimitVelocityToMaxSpeed();
+
 	UPROPERTY(EditAnywhere)
 	UHoverComponent* HoverFL;
 
