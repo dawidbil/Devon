@@ -75,7 +75,8 @@ void ADevonPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	ADevonPlayerController* DPC = Cast<ADevonPlayerController>(Controller);
 	check(EIC && DPC);
-	EIC->BindAction(DPC->MoveAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::Move);
+	EIC->BindAction(DPC->MoveAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::MoveBody);
+	EIC->BindAction(DPC->RotateAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::MoveTurret);
 
 	ULocalPlayer* LocalPlayer = DPC->GetLocalPlayer();
 	check(LocalPlayer);
