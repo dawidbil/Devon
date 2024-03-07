@@ -96,7 +96,7 @@ void ADevonPlayerPawn::MoveBody(const FInputActionValue& ActionValue)
 {
 	FVector Input = ActionValue.Get<FInputActionValue::Axis3D>();
 	// Rotate fan before scaling
-	UE_LOG(LogDevonCore, Log, TEXT("Adding to FanRotationSpeed: %f"), Input.X * FanRotationAcceleration);
+	// UE_LOG(LogDevonCore, Log, TEXT("Adding to FanRotationSpeed: %f"), Input.X * FanRotationAcceleration);
 	FanRotationSpeed += Input.X * FanRotationAcceleration;
 	// Scale & apply force to body
 	ScaleInput(&Input);
@@ -162,8 +162,8 @@ void ADevonPlayerPawn::Tick(float DeltaSeconds)
 			FanRotationSpeed = 0;
 		}
 	}
-	UE_LOG(LogDevonCore, Log, TEXT("FanRotationSpeed: %f"), FanRotationSpeed);
-	UE_LOG(LogDevonCore, Log, TEXT("Rotation Roll: %f"), Rotation.Roll);
+	// UE_LOG(LogDevonCore, Log, TEXT("FanRotationSpeed: %f"), FanRotationSpeed);
+	// UE_LOG(LogDevonCore, Log, TEXT("Rotation Roll: %f"), Rotation.Roll);
 	FanMesh->SetRelativeRotation(Rotation);
 }
 
