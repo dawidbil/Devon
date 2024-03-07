@@ -100,5 +100,14 @@ public:
 	UStaticMeshComponent* WeaponGun;
 
 	void MoveTurret(const struct FInputActionValue& ActionValue);
+
+	UPROPERTY(EditAnywhere)
+	float WeaponPitchClampAngleUp;
+
+	UPROPERTY(EditAnywhere)
+	float WeaponPitchClampAngleDown;
+
+	UPROPERTY(EditAnywhere)
+	float WeaponYawClampAngle;
 };
 

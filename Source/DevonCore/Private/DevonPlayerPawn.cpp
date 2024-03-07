@@ -66,6 +66,10 @@ ADevonPlayerPawn::ADevonPlayerPawn()
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.SetTickFunctionEnable(true);
+
+	WeaponPitchClampAngleUp = 20.f;
+	WeaponPitchClampAngleDown = 5.f;
+	WeaponYawClampAngle = 135.f;
 }
 
 void ADevonPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -173,6 +177,9 @@ void ADevonPlayerPawn::MoveTurret(const FInputActionValue& ActionValue)
 	UE_LOG(LogDevonCore, Log, TEXT("Received FInputActionValue: %s"), *Input.ToString());
 	Input += WeaponTurret->GetRelativeRotation();
 	UE_LOG(LogDevonCore, Log, TEXT("Setting relative rotation: %s"), *Input.ToString());
+	Input.Pitch = FMath::ClampAngle(Input.Pitch, -WeaponPitchClampAngleDown, WeaponPitchClampAngleUp);
+	Input.Yaw = FMath::ClampAngle(Input.Yaw, -WeaponYawClampAngle, WeaponYawClampAngle);
+	Input.Roll = 0;
 	WeaponTurret->SetRelativeRotation(Input);
 }
 
