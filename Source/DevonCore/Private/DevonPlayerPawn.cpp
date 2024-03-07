@@ -19,12 +19,6 @@ ADevonPlayerPawn::ADevonPlayerPawn()
 
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
 	Body->SetupAttachment(CollisionMesh);
-	
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm->SetupAttachment(CollisionMesh);
-
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
 	HoverFL = CreateDefaultSubobject<UHoverComponent>(TEXT("HoverFL"));
 	HoverFL->SetupAttachment(CollisionMesh);
@@ -40,6 +34,21 @@ ADevonPlayerPawn::ADevonPlayerPawn()
 
 	ThrustLocation = CreateDefaultSubobject<USceneComponent>(TEXT("ThrustLocation"));
 	ThrustLocation->SetupAttachment(CollisionMesh);
+
+	WeaponBase = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponBase"));
+	WeaponBase->SetupAttachment(CollisionMesh);
+
+	WeaponTurret = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponTurret"));
+	WeaponTurret->SetupAttachment(WeaponBase);
+
+	WeaponGun = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponGun"));
+	WeaponGun->SetupAttachment(WeaponTurret);
+	
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(WeaponGun);
+
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
 	ForwardSpeed = 10.f;
 	BackwardSpeed = 2.f;
@@ -82,7 +91,7 @@ void ADevonPlayerPawn::ScaleInput(FVector* Input)
 	Input->Y *= TurningSpeed;
 }
 
-void ADevonPlayerPawn::Move(const FInputActionValue& ActionValue)
+void ADevonPlayerPawn::MoveBody(const FInputActionValue& ActionValue)
 {
 	FVector Input = ActionValue.Get<FInputActionValue::Axis3D>();
 	// Rotate fan before scaling
@@ -155,5 +164,14 @@ void ADevonPlayerPawn::Tick(float DeltaSeconds)
 	UE_LOG(LogDevonCore, Log, TEXT("FanRotationSpeed: %f"), FanRotationSpeed);
 	UE_LOG(LogDevonCore, Log, TEXT("Rotation Roll: %f"), Rotation.Roll);
 	FanMesh->SetRelativeRotation(Rotation);
+}
+
+void ADevonPlayerPawn::MoveTurret(const FInputActionValue& ActionValue)
+{
+	FRotator Input(ActionValue[0], ActionValue[1], ActionValue[2]);
+	UE_LOG(LogDevonCore, Log, TEXT("Received FInputActionValue: %s"), *Input.ToString());
+	Input += WeaponTurret->GetRelativeRotation();
+	UE_LOG(LogDevonCore, Log, TEXT("Setting relative rotation: %s"), *Input.ToString());
+	WeaponTurret->SetRelativeRotation(Input);
 }
 

@@ -87,5 +87,18 @@ public:
 
 private:
 	float JitterMovementTime;
+
+public:
+	/* Weapon */
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* WeaponBase;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* WeaponTurret;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* WeaponGun;
+
+	void MoveTurret(const struct FInputActionValue& ActionValue);
 };
 
