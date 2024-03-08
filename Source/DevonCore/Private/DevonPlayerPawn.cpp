@@ -80,7 +80,7 @@ void ADevonPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	ADevonPlayerController* DPC = Cast<ADevonPlayerController>(Controller);
 	check(EIC && DPC);
 	EIC->BindAction(DPC->MoveAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::MoveBody);
-	EIC->BindAction(DPC->RotateAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::MoveTurret);
+	EIC->BindAction(DPC->RotateAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::HandleRotateAction);
 
 	ULocalPlayer* LocalPlayer = DPC->GetLocalPlayer();
 	check(LocalPlayer);
@@ -171,15 +171,27 @@ void ADevonPlayerPawn::Tick(float DeltaSeconds)
 	FanMesh->SetRelativeRotation(Rotation);
 }
 
-void ADevonPlayerPawn::MoveTurret(const FInputActionValue& ActionValue)
+void ADevonPlayerPawn::HandleRotateAction(const FInputActionValue& ActionValue)
 {
 	FRotator Input(ActionValue[0], ActionValue[1], ActionValue[2]);
 	UE_LOG(LogDevonCore, Log, TEXT("Received FInputActionValue: %s"), *Input.ToString());
-	Input += WeaponTurret->GetRelativeRotation();
-	UE_LOG(LogDevonCore, Log, TEXT("Setting relative rotation: %s"), *Input.ToString());
-	Input.Pitch = FMath::ClampAngle(Input.Pitch, -WeaponPitchClampAngleDown, WeaponPitchClampAngleUp);
-	Input.Yaw = FMath::ClampAngle(Input.Yaw, -WeaponYawClampAngle, WeaponYawClampAngle);
-	Input.Roll = 0;
-	WeaponTurret->SetRelativeRotation(Input);
+	MoveTurret(Input.Yaw);
+	MoveGun(Input.Pitch);
+}
+
+void ADevonPlayerPawn::MoveTurret(const float InputYaw)
+{
+	FRotator RelativeRotation = WeaponTurret->GetRelativeRotation();
+	RelativeRotation.Yaw = FMath::ClampAngle(RelativeRotation.Yaw + InputYaw, -WeaponYawClampAngle, WeaponYawClampAngle);
+	UE_LOG(LogDevonCore, Log, TEXT("New relative WeaponTurret rotation: %s"), *RelativeRotation.ToString());
+	WeaponTurret->SetRelativeRotation(RelativeRotation);
+}
+
+void ADevonPlayerPawn::MoveGun(const float InputPitch)
+{
+	FRotator RelativeRotation = WeaponGun->GetRelativeRotation();
+	RelativeRotation.Pitch = FMath::ClampAngle(RelativeRotation.Pitch + InputPitch, -WeaponPitchClampAngleDown, WeaponPitchClampAngleUp);
+	UE_LOG(LogDevonCore, Log, TEXT("New relative WeaponGun rotation: %s"), *RelativeRotation.ToString());
+	WeaponGun->SetRelativeRotation(RelativeRotation);
 }
 

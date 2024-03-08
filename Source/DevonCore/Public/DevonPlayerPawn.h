@@ -34,7 +34,6 @@ public:
 	UCameraComponent* Camera;
 
 	/* Movement */
-	void ScaleInput(FVector* Input);
 	void MoveBody(const struct FInputActionValue& ActionValue);
 	void LimitVelocityToMaxSpeed();
 
@@ -99,7 +98,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* WeaponGun;
 
-	void MoveTurret(const struct FInputActionValue& ActionValue);
+	void MoveTurret(const float InputYaw);
+	void MoveGun(const float InputPitch);
 
 	UPROPERTY(EditAnywhere)
 	float WeaponPitchClampAngleUp;
@@ -109,5 +109,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float WeaponYawClampAngle;
+
+	/* Input */
+	void HandleRotateAction(const struct FInputActionValue& ActionValue);
+	void ScaleInput(FVector* Input);
 };
 
