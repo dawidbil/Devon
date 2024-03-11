@@ -108,23 +108,11 @@ void ADevonPlayerPawn::MoveBody(const FInputActionValue& ActionValue)
 	CollisionMesh->AddForceAtLocation(AppliedForce, ThrustLocation->GetComponentLocation());
 }
 
-float VectorSquaredValuesSum(const FVector* Vector)
-{
-	return FMath::Pow(Vector->X, 2.f) + FMath::Pow(Vector->Y, 2.f) + FMath::Pow(Vector->Z, 2.f);
-}
-
 void ADevonPlayerPawn::LimitVelocityToMaxSpeed()
 {
 	FVector Velocity = CollisionMesh->GetPhysicsLinearVelocity();
-	// UE_LOG(LogDevonCore, Log, TEXT("Current Speed: %f"), Velocity.Size());
-	if (Velocity.Size() <= MaxSpeed)
-	{
-		return;
-	}
-	float LimitFactor = FMath::Pow(MaxSpeed, 2.f) / VectorSquaredValuesSum(&Velocity);
-	FVector LimitedVelocity = Velocity * LimitFactor;
-	// UE_LOG(LogDevonCore, Log, TEXT("Limited Speed: %f"), LimitedVelocity.Size());
-	CollisionMesh->SetPhysicsLinearVelocity(LimitedVelocity);
+	Velocity = Velocity.GetClampedToMaxSize(MaxSpeed);
+	CollisionMesh->SetPhysicsLinearVelocity(Velocity);
 }
 
 void ADevonPlayerPawn::Tick(float DeltaSeconds)
