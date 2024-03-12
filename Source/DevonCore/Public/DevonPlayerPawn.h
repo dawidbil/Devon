@@ -11,6 +11,8 @@ class USpringArmComponent;
 class UCameraComponent;
 class UFloatingPawnMovement;
 
+struct FInputActionValue;
+
 UCLASS()
 class DEVONCORE_API ADevonPlayerPawn : public APawn
 {
@@ -34,7 +36,7 @@ public:
 	UCameraComponent* Camera;
 
 	/* Movement */
-	void MoveBody(const struct FInputActionValue& ActionValue);
+	void MoveBody(const FInputActionValue& ActionValue);
 	void LimitVelocityToMaxSpeed();
 
 	UPROPERTY(EditAnywhere)
@@ -111,7 +113,7 @@ public:
 	float WeaponYawClampAngle;
 
 	/* Input */
-	void HandleRotateAction(const struct FInputActionValue& ActionValue);
+	void HandleRotateAction(const FInputActionValue& ActionValue);
 	void ScaleInput(FVector* Input);
 };
 
