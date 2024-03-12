@@ -113,6 +113,11 @@ public:
 	UPROPERTY(EditAnywhere)
 	float WeaponYawClampAngle;
 
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class ARailgunProjectile> ProjectileClass;
+
+public:
 	/* Input */
 	void HandleRotateAction(const FInputActionValue& ActionValue);
 	void ScaleInput(FVector* Input);
