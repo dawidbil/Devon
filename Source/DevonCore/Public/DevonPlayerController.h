@@ -23,5 +23,8 @@ public:
 
 	UPROPERTY()
 	UInputAction* RotateAction;
+
+	UPROPERTY()
+	UInputAction* ShootAction;
 };
 

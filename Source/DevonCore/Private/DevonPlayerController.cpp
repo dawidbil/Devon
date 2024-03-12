@@ -37,5 +37,9 @@ void ADevonPlayerController::SetupInputComponent()
 	RotateAction->ValueType = EInputActionValueType::Axis3D;
 	MapKey(PawnMappingContext, RotateAction, EKeys::MouseY);
 	MapKey(PawnMappingContext, RotateAction, EKeys::MouseX, false, true);
+
+	ShootAction = NewObject<UInputAction>(this);
+	ShootAction->ValueType = EInputActionValueType::Boolean;
+	PawnMappingContext->MapKey(ShootAction, EKeys::LeftMouseButton);
 }
 
