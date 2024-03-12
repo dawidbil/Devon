@@ -102,6 +102,7 @@ public:
 
 	void MoveTurret(const float InputYaw);
 	void MoveGun(const float InputPitch);
+	void FireGun(const FInputActionValue& ActionValue);
 
 	UPROPERTY(EditAnywhere)
 	float WeaponPitchClampAngleUp;

@@ -81,6 +81,7 @@ void ADevonPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	check(EIC && DPC);
 	EIC->BindAction(DPC->MoveAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::MoveBody);
 	EIC->BindAction(DPC->RotateAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::HandleRotateAction);
+	EIC->BindAction(DPC->ShootAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::FireGun);
 
 	ULocalPlayer* LocalPlayer = DPC->GetLocalPlayer();
 	check(LocalPlayer);
@@ -181,5 +182,30 @@ void ADevonPlayerPawn::MoveGun(const float InputPitch)
 	RelativeRotation.Pitch = FMath::ClampAngle(RelativeRotation.Pitch + InputPitch, -WeaponPitchClampAngleDown, WeaponPitchClampAngleUp);
 	UE_LOG(LogDevonCore, Log, TEXT("New relative WeaponGun rotation: %s"), *RelativeRotation.ToString());
 	WeaponGun->SetRelativeRotation(RelativeRotation);
+}
+
+void ADevonPlayerPawn::FireGun(const FInputActionValue& ActionValue)
+{
+	FVector Input = ActionValue.Get<FInputActionValue::Boolean>();
+	if (Input && ProjectileClass)
+	{
+		FVector SpawnLocation = WeaponGun.GetComponentLocation();
+		FRotator SpawnRotation = WeaponGun.GetComponentRotation();
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParamters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			ARailgunProjectile* Projectile = World->SpawnActor<ARailgunProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, SpawnParams);
+			if (Projectile)
+			{
+				FVector LaunchDirection = SpawnRotation.Vector();
+				Projectile->FireInDirection(LaunchDirection);
+			}
+		}
+	}
 }
 
