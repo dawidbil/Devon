@@ -27,6 +27,11 @@ ARailgunProjectile::ARailgunProjectile()
 		ProjectileMovementComponent->Bounciness = 0.3f;
 		ProjectileMovementComponent->ProjectileGravityScale = 0.f;
 	}
+
+	if (!ProjectileMeshComponent)
+	{
+		ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMeshComponent"));
+	}
 }
 
 void ARailgunProjectile::BeginPlay()

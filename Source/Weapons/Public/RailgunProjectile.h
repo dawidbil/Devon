@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SphereComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "RailgunProjectile.generated.h"
@@ -21,6 +22,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	UStaticMeshComponent* ProjectileMeshComponent;
 
 protected:
 	virtual void BeginPlay() override;
