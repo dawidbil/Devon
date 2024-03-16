@@ -83,7 +83,7 @@ void ADevonPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	check(EIC && DPC);
 	EIC->BindAction(DPC->MoveAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::MoveBody);
 	EIC->BindAction(DPC->RotateAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::HandleRotateAction);
-	EIC->BindAction(DPC->ShootAction, ETriggerEvent::Triggered, this, &ADevonPlayerPawn::FireGun);
+	EIC->BindAction(DPC->ShootAction, ETriggerEvent::Started, this, &ADevonPlayerPawn::FireGun);
 
 	ULocalPlayer* LocalPlayer = DPC->GetLocalPlayer();
 	check(LocalPlayer);
