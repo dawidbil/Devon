@@ -187,7 +187,7 @@ void ADevonPlayerPawn::MoveGun(const float InputPitch)
 
 void ADevonPlayerPawn::FireGun(const FInputActionValue& ActionValue)
 {
-	bool Input = ActionValue.Get();
+	bool Input = ActionValue.Get<bool>();
 	if (Input && ProjectileClass)
 	{
 		FVector SpawnLocation = WeaponGun.GetComponentLocation();
