@@ -31,6 +31,7 @@ ARailgunProjectile::ARailgunProjectile()
 	if (!ProjectileMeshComponent)
 	{
 		ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMeshComponent"));
+		ProjectileMeshComponent->SetupAttachment(RootComponent);
 	}
 }
 
