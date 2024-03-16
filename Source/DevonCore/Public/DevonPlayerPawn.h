@@ -9,7 +9,7 @@ class UStaticMeshComponent;
 class USceneComponent;
 class USpringArmComponent;
 class UCameraComponent;
-class UFloatingPawnMovement;
+class ARailgunProjectile;
 
 struct FInputActionValue;
 
