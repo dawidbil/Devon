@@ -1,18 +1,18 @@
-#include "DevonCoreModule.h"
+#include "WeaponsModule.h"
 #include "Modules/ModuleManager.h"
 
 #include "Log.h"
 
-void FDevonCore::StartupModule()
+void FWeapons::StartupModule()
 {
-	UE_LOG(LogDevonCore, Log, TEXT("DevonCore module starting up"));
+	UE_LOG(LogWeapons, Log, TEXT("Weapons module starting up"));
 }
 
-void FDevonCore::ShutdownModule()
+void FWeapons::ShutdownModule()
 {
-	UE_LOG(LogDevonCore, Log, TEXT("DevonCore module shutting down"));
+	UE_LOG(LogWeapons, Log, TEXT("Weapons module shutting down"));
 }
 
-IMPLEMENT_PRIMARY_GAME_MODULE( FDevonCore, DevonCore, "DevonCore" );
+IMPLEMENT_PRIMARY_GAME_MODULE( FWeapons, Weapons, "Weapons" );
 
 
