@@ -190,8 +190,8 @@ void ADevonPlayerPawn::FireGun(const FInputActionValue& ActionValue)
 	bool Input = ActionValue.Get<bool>();
 	if (Input && ProjectileClass)
 	{
-		FVector SpawnLocation = WeaponGun.GetComponentLocation();
-		FRotator SpawnRotation = WeaponGun.GetComponentRotation();
+		FVector SpawnLocation = WeaponGun->GetComponentLocation();
+		FRotator SpawnRotation = WeaponGun->GetComponentRotation();
 
 		UWorld* World = GetWorld();
 		if (World)
