@@ -13,6 +13,6 @@ void FWeapons::ShutdownModule()
 	UE_LOG(LogWeapons, Log, TEXT("Weapons module shutting down"));
 }
 
-IMPLEMENT_PRIMARY_GAME_MODULE( FWeapons, Weapons, "Weapons" );
+IMPLEMENT_MODULE( FWeapons, Weapons, "Weapons" );
 
 
