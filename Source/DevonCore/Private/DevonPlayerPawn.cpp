@@ -206,6 +206,7 @@ void ADevonPlayerPawn::FireGun(const FInputActionValue& ActionValue)
 			{
 				FVector LaunchDirection = SpawnRotation.Vector();
 				Projectile->FireInDirection(LaunchDirection);
+				DrawDebugDirectionalArrow(World, SpawnLocation, SpawnLocation + (LaunchDirection * 150.f), 150.f, FColor::Yellow, false, 1.f, 0, 1.f);
 			}
 		}
 	}
