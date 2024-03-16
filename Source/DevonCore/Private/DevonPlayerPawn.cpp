@@ -11,6 +11,7 @@
 #include "DrawDebugHelpers.h"
 #include "Math/Color.h"
 #include "Math/Vector.h"
+#include "Engine/World.h"
 
 ADevonPlayerPawn::ADevonPlayerPawn()
 {
@@ -195,7 +196,7 @@ void ADevonPlayerPawn::FireGun(const FInputActionValue& ActionValue)
 		UWorld* World = GetWorld();
 		if (World)
 		{
-			FActorSpawnParamters SpawnParams;
+			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = GetInstigator();
 
