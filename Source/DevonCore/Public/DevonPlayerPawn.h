@@ -9,7 +9,6 @@ class UStaticMeshComponent;
 class USceneComponent;
 class USpringArmComponent;
 class UCameraComponent;
-class ARailgunProjectile;
 
 struct FInputActionValue;
 
