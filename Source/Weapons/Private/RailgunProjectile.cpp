@@ -20,7 +20,7 @@ ARailgunProjectile::ARailgunProjectile()
 	{
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-		ProjectileMovementComponent->InitialSpeed = 3000.f;
+		ProjectileMovementComponent->InitialSpeed = 5000.f;
 		ProjectileMovementComponent->MaxSpeed = 3000.f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
 		ProjectileMovementComponent->bShouldBounce = true;
